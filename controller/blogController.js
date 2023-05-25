@@ -24,9 +24,6 @@ const createBlog = async (req, res) =>{
 }
 
 
-// const updateBlog = async function(req, res){
-//     console.log(req);
-// }
 
 
 const updateBlog = async function(req, res){
@@ -39,8 +36,8 @@ const updateBlog = async function(req, res){
     if (!Blog) return res.status(404).send({ status: false, msg: "No such blog found" });
     if(Blog.isDeleted == true) return res.status(404).send({ status: false, msg: "User already deleted from data" })
     const updatedData = await blogModel.findOneAndUpdate(
-        {_id : blogId},
-        { data,isPublished : true, publishedAt : new Date() },
+        {_id : blogId}, 
+        { title : data.title, body : data.body, tag : data.tag, subcategory : data.subcategory, isPublished : true, publishedAt : new Date() },
         {new : true});
 
     res.status(200).send({status : true, "message": "Blog updated successfully",data : updatedData});
