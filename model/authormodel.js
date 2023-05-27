@@ -37,5 +37,4 @@ const author= new mongoose.Schema({
 
 module.exports= mongoose.model('Author',author)
 
-// { fname: { mandatory}, lname: {mandatory}, title: {mandatory, enum[Mr, Mrs, Miss]}, email: {mandatory, valid email, unique}, password: {mandatory} }
 
