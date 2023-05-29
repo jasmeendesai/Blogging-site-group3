@@ -2,7 +2,7 @@ const express = require('express');
 const route = express.Router();
 const authorcontroller= require("../controller/authorcontroller")
 const blogController = require("../controller/blogController")
-const middleware = require("../middleware/validation")
+const middleware = require("../middleware/middleware")
 
 route.get("/myfirstapi",function(req, res){
     res.send("This is working")
