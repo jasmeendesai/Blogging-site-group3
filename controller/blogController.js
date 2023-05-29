@@ -33,12 +33,12 @@ const createBlog = async (req, res) => {
 
         // subcategory validation
 
-        if (data.subcategory == "") return res.status(400).send({ status: false, message: "subcategory can not Empty" })
+        
         if (data.subcategory) {
-
+            if (data.subcategory.length == 0) return res.status(400).send({ status: false, message: "subcategory can not Empty array" })
             let subcategory = data.subcategory
-            var isValidate = Array.isArray(subcategory) && subcategory.every(value => typeof value === "string");
-            if (!isValidate) return res.status(400).send({ status: false, message: "subcategory Should be Array of String" })
+            var isValid = Array.isArray(subcategory) && subcategory.every(value => (typeof value === "string" && value.length>0));
+            if (!isValid) return res.status(400).send({ status: false, message: "subcategory Should be Array of String and it should not be empty string" })
         }
 
         // authorId validation
