@@ -3,21 +3,27 @@ const blogModel = require("../model/blogmodel")
 
 
 const authentication = async function (req, res, next) {
-
-    const token = req.headers["x-api-key"]
-
-    // header validation
-    if (!Object.keys(req.headers).includes('x-api-key')) return res.status(404).send({ status: false, message: "error ,header is missing" });
-    if (!token) return res.status(404).send({ status: false, message: "error ,token is missing" });
-
     try {
+        const token = req.headers["x-api-key"]
 
-        const decodedToken = jwt.verify(token, 'functionUp-tech1')
-        req.decodedToken = decodedToken.authorId
+        // header validation
+        if (!Object.keys(req.headers).includes('x-api-key')) {
+            return res.status(404).send({ status: false, message: "error ,header is missing" });
+        }
+        if (!token) {
+            return res.status(404).send({ status: false, message: "error ,token is missing" });
+        }
+        try {
 
-        next()
+            const decodedToken = jwt.verify(token, 'functionUp-tech1')
+            req.decodedToken = decodedToken.authorId
+
+            next()
+        } catch (error) {
+            return res.status(401).send({ status: false, message: "token is invalid" })
+        }
     } catch (error) {
-        res.status(401).send({ status: false, message: "token is invalid" })
+        return res.status(500).send({ status: false, message: error.message })
     }
 }
 
@@ -25,6 +31,9 @@ const authorization = async function (req, res, next) {
 
 
     const blogId = req.params.blogId
+    if (blogId.length != 24) {
+        return res.status(400).send({ status: false, message: "enter valid blogId" })
+    }
     const blog = await blogModel.findById(blogId);
 
     if (!blog) return res.status(404).send({ status: false, message: 'Blog not found' })

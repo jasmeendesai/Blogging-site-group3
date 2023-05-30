@@ -23,7 +23,7 @@ const author= new mongoose.Schema({
         validate: {
             validator: function(value) {
               // Regular expression to validate email format
-              return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value);
+              return  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value);
             },
             message: 'Invalid email format'
           }
