@@ -61,7 +61,7 @@ const authorization = async function (req, res, next) {
       }
   
       if (blog.isDeleted) {
-        return res.status(200).send({ status: true});
+        return res.status(400).send({ status: false , message : "Blog is already deleted"});
       }
   
       const userLoggedIn = req.decodedToken;

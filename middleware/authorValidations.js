@@ -48,7 +48,6 @@ const validateNameAndTitle = async function (req, res, next) {
 
 //-------------------------------------------------------------------------
 
-//Email and password validation
 
 const validateEmailAndPassword = async function (req, res, next) {
   try {
@@ -57,7 +56,7 @@ const validateEmailAndPassword = async function (req, res, next) {
     }
     const { email, password } = req.body;
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])/;
     if (!email) {
       return res.status(400).send({ status: false, message: "Email is required" });
     }
@@ -68,7 +67,7 @@ const validateEmailAndPassword = async function (req, res, next) {
     if (!password) {
       return res.status(400).send({ status: false, message: "Password is required" });
     }
-    if (typeof password !== "string" || password.trim().length === 0) {
+    if (typeof password !== "string" || !passwordRegex.test(password) || password.trim().length === 0) {
       return res.status(400).send({ status: false, message: "Enter a valid password" });
     }
     if (password.length < 5) {

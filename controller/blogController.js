@@ -64,21 +64,6 @@ const updateBlog = async function (req, res) {
 // =====================================================================================
 
 
-// const deleteuser = async function (req, res) {
-//     try {
-//         const blog_Id = req.params.blogId
-
-//         await blogModel.findOneAndUpdate({ _id: blog_Id}, { isDeleted: true, deletedAt: new Date(),isPublished : false })
-
-//         return res.status(200).json({ status: true, message: "Blog deletion is successful" })
-//     }
-//     catch (error) {
-//         return res.status(500).send({ status: false, message: error.message });
-//     }
-// }
-
-
-
 const deleteuser = async function (req, res) {
     try {
       const blogId = req.params.blogId;
@@ -90,6 +75,9 @@ const deleteuser = async function (req, res) {
       return res.status(500).send({ status: false, message: error.message });
     }
   };
+
+
+  
 // ========================================================================
 
 const deletequery = async function (req, res) {
@@ -101,7 +89,7 @@ const deletequery = async function (req, res) {
         const blog = await blogModel.find(filter);  //
      
         if (blog.length === 0) {
-            return res.status(400).send({ status: true, message: "Blogs not found"});
+            return res.status(400).send({ status: false, message: "Blogs not found"});
         }
         
 
@@ -110,7 +98,7 @@ const deletequery = async function (req, res) {
         const user = blog.filter((val) => val.authorId == userLoggedIn)
  
         if (user.length == 0) {
-            return res.status(403).send({ status: true, message: "User not authorised"});
+            return res.status(403).send({ status: false, message: "User not authorised"});
         }
 
         await blogModel.updateMany({ _id: { $in: user }}, { $set: { isDeleted: true, deletedAt: new Date(), isPublished : false } });
