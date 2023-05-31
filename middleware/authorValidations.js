@@ -15,7 +15,7 @@ const validateNameAndTitle = async function (req, res, next) {
     if (!fname) {
       return res.status(400).send({ status: false, message: "fname is required" });
     }
-    if (typeof fname !== "string" || !validkeys.test(fname)) {
+    if (typeof fname !== "string" || !validkeys.test(fname) || fname.trim().length === 0) {  // value.trim().length===0 return false if true then run if block
       return res.status(400).send({ status: false, message: "Enter a valid fname" });
     }
     if (fname.length < 2) {
@@ -25,7 +25,7 @@ const validateNameAndTitle = async function (req, res, next) {
     if (!lname) {
       return res.status(400).send({ status: false, message: "lname is required" });
     }
-    if (typeof lname !== "string" || !validkeys.test(lname)) {
+    if (typeof lname !== "string" || !validkeys.test(lname) || lname.trim().length === 0) {
       return res.status(400).send({ status: false, message: "Enter a valid lname" });
     }
     if (lname.length < 2) {
@@ -35,7 +35,7 @@ const validateNameAndTitle = async function (req, res, next) {
     if (!title) {
       return res.status(400).send({ status: false, message: "title is required" });
     }
-    if (typeof title !== "string" || !enm.includes(title)) {
+    if (typeof title !== "string" || !enm.includes(title) || title.trim().length === 0) {
       return res.status(400).send({ status: false, message: "Enter a valid title" });
     }
 
@@ -47,37 +47,41 @@ const validateNameAndTitle = async function (req, res, next) {
 }
 
 //-------------------------------------------------------------------------
+
 //Email and password validation
 
 const validateEmailAndPassword = async function (req, res, next) {
   try {
-    if(!req.body || Object.keys(req.body).length === 0){
+    if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).send({ status: false, message: "No data is present in body" });
     }
-    const { email, password } = req.body
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;;
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])/;
+    const { email, password } = req.body;
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     if (!email) {
       return res.status(400).send({ status: false, message: "Email is required" });
     }
-    if (typeof email !== "string" || !emailRegex.test(email)) {
+    if (typeof email !== "string" || !emailRegex.test(email) || email.trim().length === 0) {
       return res.status(400).send({ status: false, message: "Enter a valid email" });
     }
 
     if (!password) {
       return res.status(400).send({ status: false, message: "Password is required" });
     }
-    if (typeof password !== "string" || !passwordRegex.test(password)) {
-      return res.status(400).send({ status: false, message: "Enter a valid email" });
+    if (typeof password !== "string" || password.trim().length === 0) {
+      return res.status(400).send({ status: false, message: "Enter a valid password" });
     }
     if (password.length < 5) {
-      return res.status(400).send({ status: false, message: "length of password sholud be more than 5 charactes" })
+      return res.status(400).send({ status: false, message: "Length of password should be more than 5 characters" });
     }
     next();
   } catch (error) {
-    return res.status(500).send({ status: false, message: error.message })
+    return res.status(500).send({ status: false, message: error.message });
   }
-}
+};
+
+
+
+
 
 module.exports = { validateEmailAndPassword, validateNameAndTitle }
