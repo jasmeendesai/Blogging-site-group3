@@ -10,7 +10,7 @@ const blog= new mongoose.Schema({
       },
       body: {
         type: String,
-        trim : true,
+        
         required: true
       },
       authorId: {
@@ -19,7 +19,7 @@ const blog= new mongoose.Schema({
         ref: "Author"
       },
       tags: {
-        type: [{type : String, trim : true}]
+        type: [String]
 
       },
       category: {
@@ -28,7 +28,7 @@ const blog= new mongoose.Schema({
         required: true
       },
       subcategory: {
-        type: [{type : String, trim : true}],
+        type: [String]
     
       },
       isDeleted: {

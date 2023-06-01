@@ -1,9 +1,83 @@
 const blogModel = require("../model/blogmodel")
+const validator = require('../util/validator')
 
 const createBlog = async (req, res) => {
     try {
 
         let data = req.body
+        let {title,body,tags,category,subcategory,authorId} = req.body
+
+        if(!validator.isValidRequestBody){
+            return res.status(400).send({ status: false, message: "No data is present in body" });
+        }
+        
+        // title validation
+
+        if(!title) {
+            return res.status(400).send({ status: false, message: "title is required" });
+        }
+        if(!validator.isValid) {
+            return res.status(400).send({ status: false, message: "enter valid title" })
+        }
+
+        // body validation
+
+        if(!body) {
+            return res.status(400).send({ status: false, message: "body is required" });
+        }
+        if(!validator.isValid) {
+            return res.status(400).send({ status: false, message: "enter valid body" })
+        }
+
+        // // authorId validation
+        if (!authorId) {
+            return res.status(400).send({ status: false, message: "authorId is required" })
+        };
+
+        const authorIdData = await AuthorModel.findById(authorId)
+        if (!authorIdData) {
+            return res.status(404).send({ status: false, message: 'Author not found' })
+        }
+
+        // auhtorization
+        if(authorId !== req.decodedToken) {
+            return res.status(403).send({status: false, message: 'user is not authorised'})
+        }
+
+        // tags validation
+       
+        if (tags === "" || (Array.isArray(tags) && tags.length === 0)) {
+            return res.status(400).send({ status: false, message: "Tags cannot be an empty array or string" });
+        }
+          
+        if (Array.isArray(tags)) {
+            const isValid = tags.every(value => typeof value === "string" && value.length > 0);
+            if (!isValid) {
+              return res.status(400).send({ status: false, message: "Tags should be an array of non-empty strings" });
+            }
+        }
+
+        // category validation
+
+        if(!category) {
+            return res.status(400).send({ status: false, message: "category is required" });
+        }
+        if(!validator.category) {
+            return res.status(400).send({ status: false, message: "enter valid category" })
+        }
+
+        // subcategory validation
+
+        if (subcategory === "" || (Array.isArray(subcategory) && subcategory.length === 0)) {
+            return res.status(400).send({ status: false, message: "subcategory cannot be an empty array or string" });
+        }
+          
+        if (Array.isArray(subcategory)) {
+            const isValid = subcategory.every(value => typeof value === "string" && value.length > 0);
+            if (!isValid) {
+              return res.status(400).send({ status: false, message: "subcategory should be an array of non-empty strings" });
+            }
+        }
 
         data.isPublished = data.isPublished ? data.isPublished : false
         data.publishedAt = data.isPublished ? new Date() : null

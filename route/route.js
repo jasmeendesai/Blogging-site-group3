@@ -7,43 +7,47 @@ const blogController = require("../controller/blogController")
 
 const middleware = require("../middleware/middleware")
 
-const authorValidate = require("../middleware/authorValidations")
-
-const blogValidation = require("../middleware/blogValidation")
 
 //create author
 
-route.post("/authors", 
-    authorValidate.validateNameAndTitle, 
-    authorValidate.validateEmailAndPassword, 
-    authorcontroller.createauthor)
+route.post("/authors",authorcontroller.createauthor)
 
 //author/login
 
-route.post("/login", 
-    authorValidate.validateEmailAndPassword, 
-    authorcontroller.authorLogin)
+route.post("/login", authorcontroller.authorLogin)
 
 //create blogs
 
 route.post("/blogs", 
     middleware.authentication, 
-    blogValidation.blogValidation ,
     blogController.createBlog)
 
 //get blogs
 
-route.get("/blogs", middleware.authentication, blogController.getBlog)
+route.get("/blogs", 
+    middleware.authentication, 
+    blogController.getBlog)
 
 //update blog
-route.put("/blogs/:blogId", middleware.authentication, middleware.authorization, blogController.updateBlog);
+route.put("/blogs/:blogId", 
+    middleware.authentication, 
+    middleware.authorization, 
+    blogController.updateBlog);
 
 //delete blog by Id
-route.delete("/blogs/:blogId", middleware.authentication, middleware.authorization, blogController.deleteuser);
+route.delete("/blogs/:blogId", 
+    middleware.authentication, 
+    middleware.authorization, 
+    blogController.deleteuser);
 
 //delete query
-route.delete("/blogs", middleware.authentication, blogController.deletequery);
+route.delete("/blogs", 
+    middleware.authentication, 
+    blogController.deletequery);
 
+route.use("*",(req,res)=>{
+    return res.status(404).send({status : true, message :"invalid urls"})
+})
 
 module.exports = route;
 
