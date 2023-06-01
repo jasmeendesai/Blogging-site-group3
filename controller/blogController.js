@@ -5,7 +5,7 @@ const createBlog = async (req, res) => {
     try {
 
         let data = req.body
-        let {title,body,tags,category,subcategory,authorId} = req.body
+        let {title,body,tags,category,subcategory,authorId} = data
 
         if(!validator.isValidRequestBody){
             return res.status(400).send({ status: false, message: "No data is present in body" });

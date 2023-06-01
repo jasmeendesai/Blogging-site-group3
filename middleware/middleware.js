@@ -4,27 +4,17 @@ const blogModel = require("../model/blogmodel")
 
 const authentication = async function (req, res, next) {
     try {
-        const token = req.headers["x-api-key"]
-
-        // header validation
-        // if (!Object.keys(req.headers).includes('x-api-key')) {
-        //     return res.status(404).send({ status: false, message: "error ,header is missing" });
-        // }
+        const token = req.headers["x-api-key"];
         if (!token) {
             return res.status(404).send({ status: false, message: "error ,token is missing" });
         }
 
-        try {
-
-            const decodedToken = jwt.verify(token, 'functionUp-tech1')
-            req.decodedToken = decodedToken.authorId
-
-            next()
-        } catch (error) {
-            return res.status(401).send({ status: false, message: "token is invalid" })
-        }
+            const decodedToken = jwt.verify(token, 'functionUp-tech1');
+            req.decodedToken = decodedToken.authorId;
+            next();
     } catch (error) {
-        return res.status(500).send({ status: false, message: error.message })
+      return res.status(401).send({ status: false, message: "token is invalid" });
+       
     }
 }
 
