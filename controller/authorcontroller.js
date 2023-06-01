@@ -11,7 +11,8 @@ const createauthor = async function (req,res) {
   try {
     
     const enm = ['Mr', 'Mrs', 'Miss'];
-    const { fname, lname, title,email,password} = req.body
+    const data = req.body;
+    const { fname, lname, title,email,password} = data
 
     if(!validator.isValidRequestBody(req.body) ){
           return res.status(400).send({ status: false, message: "No data is present in body" });
@@ -51,10 +52,10 @@ const createauthor = async function (req,res) {
         return res.status(400).send({ status: false, message: "Enter a valid password" });
     }
 
-    const data = req.body;
-    const isEmail = await AuthorModel.findOne({ email: data.email });
+    
+    const isEmail = await AuthorModel.findOne({ email: email });
     if (isEmail) {
-      return res.status(409).send({ status: false, message: "Email address is already registered" });
+      return res.status(400).send({ status: false, message: "Email address is already registered" });
     }
     
     const createdata = await AuthorModel.create(data);
@@ -102,7 +103,7 @@ const authorLogin = async function (req, res) {
       if (password) {
         const token = jwt.sign({ authorId: userLogin._id }, 'functionUp-tech1');
 
-        res.setHeader("x-api-key", token)
+        // res.status(200).setHeader("x-api-key", token)
 
         return res.status(201).send({ status: true, data: { token: token } })
       } else {
@@ -116,4 +117,5 @@ const authorLogin = async function (req, res) {
 
 
 module.exports = { createauthor, authorLogin }
+
 
