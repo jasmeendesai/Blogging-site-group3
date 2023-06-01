@@ -1,4 +1,5 @@
 const blogModel = require("../model/blogmodel")
+const AuthorModel = require("../model/authormodel")
 const validator = require('../util/validator')
 
 const createBlog = async (req, res) => {
@@ -30,6 +31,10 @@ const createBlog = async (req, res) => {
         }
 
         // // authorId validation
+        if (!validator.isValidObjectId(authorId)) {
+            return res.status(400).send({status: false,message: `${authorId} is not a valid author id`
+        });
+        }
         if (!authorId) {
             return res.status(400).send({ status: false, message: "authorId is required" })
         };
@@ -38,25 +43,7 @@ const createBlog = async (req, res) => {
         if (!authorIdData) {
             return res.status(404).send({ status: false, message: 'Author not found' })
         }
-
-        // auhtorization
-        if(authorId !== req.decodedToken) {
-            return res.status(403).send({status: false, message: 'user is not authorised'})
-        }
-
-        // tags validation
-       
-        if (tags === "" || (Array.isArray(tags) && tags.length === 0)) {
-            return res.status(400).send({ status: false, message: "Tags cannot be an empty array or string" });
-        }
-          
-        if (Array.isArray(tags)) {
-            const istagValid = tags.every(value => typeof value === "string" && value.length > 0);
-            if (!istagValid) {
-              return res.status(400).send({ status: false, message: "Tags should be an array of non-empty strings" });
-            }
-        }
-
+        
         // category validation
 
         if(!category) {
@@ -64,19 +51,6 @@ const createBlog = async (req, res) => {
         }
         if(!validator.isValid(category)) {
             return res.status(400).send({ status: false, message: "enter valid category" })
-        }
-
-        // subcategory validation
-
-        if (subcategory === "" || (Array.isArray(subcategory) && subcategory.length === 0)) {
-            return res.status(400).send({ status: false, message: "subcategory cannot be an empty array or string" });
-        }
-          
-        if (Array.isArray(subcategory)) {
-            const issubcategoryValid = subcategory.every(value => typeof value === "string" && value.length > 0);
-            if (!issubcategoryValid) {
-              return res.status(400).send({ status: false, message: "subcategory should be an array of non-empty strings" });
-            }
         }
 
         data.isPublished = data.isPublished ? data.isPublished : false
@@ -98,9 +72,12 @@ const getBlog = async function (req, res) {
     try {
 
         const filter = req.query
+        const { authorId, category, tags, subcategory } = filter;
+    
         filter.isDeleted = false
         filter.isPublished = true
-
+        
+       
         const data = await blogModel.find(filter)
 
         if (data.length == 0) return res.status(404).send({ status: false, message: "data not found" })

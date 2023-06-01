@@ -103,9 +103,7 @@ const authorLogin = async function (req, res) {
       if (password) {
         const token = jwt.sign({ authorId: userLogin._id }, 'functionUp-tech1');
 
-        // res.status(200).setHeader("x-api-key", token)
-
-        return res.status(201).send({ status: true, data: { token: token } })
+        return res.status(200).send({ status: true, data: { token: token } })
       } else {
         return res.status(401).send({status: false,message: "not a authenticate user"})
       }
