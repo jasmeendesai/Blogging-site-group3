@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogmodel")
-
+const validator = require("../util/validator");
 
 const authentication = async function (req, res, next) {
     try {
@@ -18,16 +18,13 @@ const authentication = async function (req, res, next) {
     }
 }
 
-
 const authorization = async function (req, res, next) {
     try {
       const blogId = req.params.blogId;
-      if (!validator.isValidObjectId(blogId)) {
-        return res.status(401).send({
-          status: false,
-          message: `${blogId} is not a valid author id`,
-        });
-      }
+       if (!validator.isValidObjectId(blogId)) {
+        return res.status(401).send({status: false,message: `${blogId} is not a valid author id`,
+      });
+    }
       const blog = await blogModel.findById(blogId);
       if (!blog) {
         return res.status(404).send({ status: false, message: "Blog not found" });
