@@ -8,7 +8,7 @@ const createBlog = async (req, res) => {
         let data = req.body
         let {title,body,category,authorId} = data
 
-        if(!validator.isValidRequestBody){
+        if(!validator.isValidRequestBody(data)){
             return res.status(400).send({ status: false, message: "No data is present in body" });
         }
         
@@ -31,14 +31,14 @@ const createBlog = async (req, res) => {
         }
 
         // // authorId validation
+        if (!authorId) {
+            return res.status(400).send({ status: false, message: "authorId is required" })
+        };
         if (!validator.isValidObjectId(authorId)) {
             return res.status(400).send({status: false,message: `${authorId} is not a valid author id`
         });
         }
-        if (!authorId) {
-            return res.status(400).send({ status: false, message: "authorId is required" })
-        };
-
+       
         const authorIdData = await AuthorModel.findById(authorId)
         if (!authorIdData) {
             return res.status(404).send({ status: false, message: 'Author not found' })
@@ -72,9 +72,8 @@ const getBlog = async function (req, res) {
     try {
 
         const filter = req.query
-        const { authorId, category, tags, subcategory } = filter;
     
-        filter.isDeleted = false
+        filter.isDeleted = false 
         filter.isPublished = true
         
        
@@ -96,12 +95,12 @@ const updateBlog = async function (req, res) {
         const blogId = req.params.blogId
 
         const data = req.body
-        if(!req.body || Object.keys(req.body).length === 0){
+        if(!validator.isValidRequestBody(data)){
             return res.status(400).send({ status: false, message: "No data is present in body" });
         }
         
         const updatedData = await blogModel.findOneAndUpdate(
-            { _id: blogId },
+            { _id: blogId }, 
             { $push: { tags: data.tags, subcategory: data.subcategory }, title: data.title, body: data.body, isPublished: true, publishedAt: new Date() },
             { new: true });
 
@@ -136,7 +135,7 @@ const deletequery = async function (req, res) {
     try {
         const filter = req.query;
         const userLoggedIn = req.decodedToken //unique
-        filter.isDeleted =false;
+        filter.isDeleted =false; 
         const blog = await blogModel.find(filter);  //
      
         if (blog.length === 0) {

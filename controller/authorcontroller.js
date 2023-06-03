@@ -67,7 +67,7 @@ const createauthor = async function (req,res) {
   }
 };
 
-module.exports = { createauthor };
+
 
 
 //-------------------------------------------------
@@ -78,7 +78,7 @@ const authorLogin = async function (req, res) {
     try {
       if(!validator.isValidRequestBody(req.body) ){
         return res.status(400).send({ status: false, message: "No data is present in body" });
-  }
+      }
       const { email, password } = req.body;
 
       if (!email ||!password) {
